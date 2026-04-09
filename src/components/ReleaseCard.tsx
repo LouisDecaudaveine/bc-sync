@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Release } from "@/lib/bandcamp/types";
 import { formatDate } from "@/lib/format";
 import { LazyImage } from "./LazyImage";
+import { RefetchReleaseButton } from "./RefetchReleaseButton";
 
 export function ReleaseCard({ release: r }: { release: Release }) {
   return (
@@ -13,6 +14,7 @@ export function ReleaseCard({ release: r }: { release: Release }) {
         className="group block"
       >
         <div className="aspect-square bg-neutral-800 rounded overflow-hidden relative">
+          <RefetchReleaseButton releaseId={r.id} />
           {r.artworkUrl ? (
             <LazyImage
               src={r.artworkUrl}

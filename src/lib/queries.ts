@@ -67,11 +67,14 @@ export function getSplitReleases(
 export function getReleasesByMonth(
   year: number,
   month: number,
+  /** Optional upper bound (exclusive). Pass `new Date().toISOString()` to exclude upcoming releases. */
+  before?: string,
 ): Release[] {
   const from = `${year}-${String(month).padStart(2, "0")}-01T00:00:00.000Z`;
   const nextMonth = month === 12 ? 1 : month + 1;
   const nextYear = month === 12 ? year + 1 : year;
-  const to = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01T00:00:00.000Z`;
+  const endOfMonth = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01T00:00:00.000Z`;
+  const to = before && before < endOfMonth ? before : endOfMonth;
 
   const rows = getDb()
     .prepare(

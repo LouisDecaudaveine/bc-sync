@@ -32,8 +32,8 @@ function authHeaders(): HeadersInit {
 // which is well within what other Bandcamp tools use successfully.
 
 const limiter = new Bottleneck({
-  maxConcurrent: 3,
-  minTime: 400,
+  maxConcurrent: 1,
+  minTime: 800,
 });
 
 // Separate, slower limiter for tag backfill — runs in the background and

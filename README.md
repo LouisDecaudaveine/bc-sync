@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# bc sync
 
-## Getting Started
+A local web app that syncs your followed Bandcamp artists and shows their releases in a browsable feed, organized by month.
 
-First, run the development server:
+![Releases page](public/assets/screenshots/releases-page.png)
+
+## Setup
+
+### 1. Clone and install
+
+```bash
+git clone <repo-url>
+cd bandcamp-feed
+npm install
+```
+
+### 2. Create `.env.local`
+
+Copy the example file and fill in your Bandcamp credentials:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Then edit `.env.local`:
+
+```env
+# Required: your Bandcamp session cookie.
+# Open bandcamp.com while logged in → DevTools → Application → Cookies → bandcamp.com
+# Copy the value of the `identity` cookie.
+BANDCAMP_IDENTITY_COOKIE=<your-identity-cookie>
+
+# Required: your numeric Bandcamp fan ID.
+# Visit your Bandcamp profile page → View Source → search for "fan_id".
+BANDCAMP_FAN_ID=<your-fan-id>
+
+# Optional: how many minutes before a band is considered stale (default: 360).
+SYNC_STALE_MINUTES=360
+```
+
+### 3. Start the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Initial sync
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+On first launch, navigate to the **Sync** page (link in the top-right corner of the nav bar, or go to `/sync`). The sync starts automatically and runs in two phases:
 
-## Learn More
+1. **Fetching followed artists** -- pulls all bands you follow from Bandcamp
+2. **Fetching discographies** -- grabs the full release catalog for each artist (recently synced artists are skipped)
 
-To learn more about Next.js, take a look at the following resources:
+After the main sync completes, **tag backfill** runs in the background to fetch genre tags for each release.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Sync page](public/assets/screenshots/sync-page.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The sync page shows real-time progress: bands processed, new releases found, and the current artist being synced.
 
-## Deploy on Vercel
+## Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Browse releases by month
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The main **Releases** page shows all releases from your followed artists for the current month. Use the month pagination at the top to navigate between months.
+
+![Releases page](public/assets/screenshots/releases-page.png)
+
+Each release card shows the artwork, title, artist, release date, and genre tags. Clicking a release opens it on Bandcamp.
+
+### Upcoming releases
+
+Click the **Upcoming** button in the top-right to see all future-dated releases sorted by date.
+
+![Upcoming releases](public/assets/screenshots/upcoming-releases.png)
+
+### Per-release refetch
+
+When hovering over a release card, a small sync button appears in the top-right corner of the artwork. Clicking it re-fetches that specific release from Bandcamp, which is useful for:
+
+- **Getting tags** if they weren't backfilled yet
+- **Fixing the URL** if the wrong one was stored
+
+![Refetch button](public/assets/screenshots/refetch-button.png)
+
+### Artists
+
+The **Artists** page lists all your followed artists, sorted by most recent release.
+
+## Data storage
+
+All data is stored locally in a SQLite database at `data/store.sqlite`, created automatically on first sync. No external database setup is needed.

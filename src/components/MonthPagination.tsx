@@ -66,7 +66,8 @@ export function MonthPagination({
               className={hasOlder ? linkClass : disabledClass}
               aria-disabled={!hasOlder}
             >
-              &larr; {monthLabel(prev.year, prev.month)}
+              <img src="/assets/icons/chevron-left.svg" alt="" className="inline w-4 h-4 mr-1 align-middle" />
+              <span className="align-middle">{monthLabel(prev.year, prev.month)}</span>
             </Link>
 
             <span className="px-3 py-1.5 text-sm font-medium">
@@ -78,7 +79,8 @@ export function MonthPagination({
               className={hasNewer ? linkClass : disabledClass}
               aria-disabled={!hasNewer}
             >
-              {monthLabel(next.year, next.month)} &rarr;
+              <span className="align-middle">{monthLabel(next.year, next.month)}</span>
+              <img src="/assets/icons/chevron-right.svg" alt="" className="inline w-4 h-4 ml-1 align-middle" />
             </Link>
           </>
         )}

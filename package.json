@@ -11,6 +11,9 @@
     "migrate:sqlite": "tsx scripts/migrate-json-to-sqlite.ts"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.97.0",
+    "ag-grid-community": "^35.2.1",
+    "ag-grid-react": "^35.2.1",
     "better-sqlite3": "^12.8.0",
     "bottleneck": "^2.19.5",
     "dotenv": "^16.4.5",

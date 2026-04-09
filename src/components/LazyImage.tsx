@@ -14,6 +14,7 @@ export function LazyImage({
   className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [visible, setVisible] = useState(false);
 
@@ -38,6 +39,14 @@ export function LazyImage({
     if (!visible) return;
     setStatus("loading");
   }, [visible]);
+
+  // Handle browser-cached images where onLoad fires before React attaches the handler
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth > 0 && status === "loading") {
+      setStatus("loaded");
+    }
+  });
 
   const onLoad = useCallback(() => setStatus("loaded"), []);
   const onError = useCallback(() => setStatus("error"), []);
@@ -72,6 +81,7 @@ export function LazyImage({
       {visible && status !== "error" && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
+          ref={imgRef}
           src={src}
           alt={alt}
           onLoad={onLoad}
