@@ -7,18 +7,19 @@
  */
 
 import Bottleneck from "bottleneck";
+import { getCredentials } from "../credentials";
 
 const BASE = "https://bandcamp.com";
 
 function authHeaders(): HeadersInit {
-  const cookie = process.env.BANDCAMP_IDENTITY_COOKIE;
-  if (!cookie) {
+  const creds = getCredentials();
+  if (!creds) {
     throw new Error(
-      "BANDCAMP_IDENTITY_COOKIE is not set. See .env.local.example.",
+      "Bandcamp credentials not configured. Visit /setup to get started.",
     );
   }
   return {
-    cookie: `identity=${cookie}`,
+    cookie: `identity=${creds.cookie}`,
     "user-agent":
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
     accept: "application/json, text/javascript, */*; q=0.01",

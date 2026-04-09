@@ -37,8 +37,22 @@ export default function RootLayout({
                 <Link href="/releases" className="hover:text-white">Releases</Link>
                 <Link href="/artists" className="hover:text-white">Artists</Link>
               </nav>
-              <div className="ml-auto">
+              <div className="ml-auto flex items-center gap-3">
                 <RefreshButton />
+                <Link
+                  href="/settings"
+                  className="opacity-70 hover:opacity-100"
+                  aria-label="Settings"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/assets/icons/settings.svg"
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="invert"
+                  />
+                </Link>
               </div>
             </div>
           </header>

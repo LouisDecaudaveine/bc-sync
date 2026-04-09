@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
+import { hasCredentials } from "@/lib/credentials";
 
 export default function Home() {
-  redirect("/releases");
+  redirect(hasCredentials() ? "/releases" : "/setup");
 }

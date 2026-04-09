@@ -10,6 +10,7 @@ import {
   type RawFollowedBand,
 } from "./bandcamp/client";
 import type { Band, Release, SyncRun } from "./bandcamp/types";
+import { getCredentials } from "./credentials";
 import {
   getRecentlySyncedBandIds,
   markBandSynced,
@@ -74,9 +75,9 @@ export function isSyncRunning(): boolean {
 }
 
 async function doSync(): Promise<SyncRun> {
-  const fanIdRaw = process.env.BANDCAMP_FAN_ID;
-  if (!fanIdRaw) throw new Error("BANDCAMP_FAN_ID not set");
-  const fanId = Number(fanIdRaw);
+  const creds = getCredentials();
+  if (!creds) throw new Error("Bandcamp credentials not configured. Visit /setup to get started.");
+  const fanId = creds.fanId;
 
   const run: SyncRun = {
     startedAt: new Date().toISOString(),

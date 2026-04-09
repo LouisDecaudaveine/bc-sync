@@ -67,6 +67,8 @@ export function getDb(): Database.Database {
 const MIGRATIONS: string[] = [
   // v1: add last_synced_at to bands so sync can skip recently-synced artists
   `ALTER TABLE bands ADD COLUMN last_synced_at TEXT;`,
+  // v2: key-value settings table for storing credentials etc.
+  `CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);`,
 ];
 
 function migrate(db: Database.Database): void {
@@ -79,6 +81,19 @@ function migrate(db: Database.Database): void {
     }
     db.pragma(`user_version = ${MIGRATIONS.length}`);
   })();
+}
+
+export function getSetting(key: string): string | undefined {
+  const row = getDb()
+    .prepare("SELECT value FROM settings WHERE key = ?")
+    .get(key) as { value: string } | undefined;
+  return row?.value;
+}
+
+export function setSetting(key: string, value: string): void {
+  getDb()
+    .prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)")
+    .run(key, value);
 }
 
 export function closeDb(): void {

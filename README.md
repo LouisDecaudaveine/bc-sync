@@ -4,6 +4,21 @@ A local web app that syncs your followed Bandcamp artists and shows their releas
 
 ![Releases page](public/assets/screenshots/releases-page.png)
 
+## Prerequisites
+
+You need **Node.js** (v18 or later) and **npm** installed on your machine.
+
+- **macOS** (Homebrew): `brew install node`
+- **Windows / macOS / Linux** (official installer): [https://nodejs.org](https://nodejs.org) -- download the LTS version, which includes npm
+- **Via nvm** (recommended for managing multiple versions): [https://github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)
+
+Verify your installation:
+
+```bash
+node -v   # should print v18 or later
+npm -v    # should print 9 or later
+```
+
 ## Setup
 
 ### 1. Clone and install
@@ -14,31 +29,7 @@ cd bandcamp-feed
 npm install
 ```
 
-### 2. Create `.env.local`
-
-Copy the example file and fill in your Bandcamp credentials:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Then edit `.env.local`:
-
-```env
-# Required: your Bandcamp session cookie.
-# Open bandcamp.com while logged in → DevTools → Application → Cookies → bandcamp.com
-# Copy the value of the `identity` cookie.
-BANDCAMP_IDENTITY_COOKIE=<your-identity-cookie>
-
-# Required: your numeric Bandcamp fan ID.
-# Visit your Bandcamp profile page → View Source → search for "fan_id".
-BANDCAMP_FAN_ID=<your-fan-id>
-
-# Optional: how many minutes before a band is considered stale (default: 360).
-SYNC_STALE_MINUTES=360
-```
-
-### 3. Start the dev server
+### 2. Start the dev server
 
 ```bash
 npm run dev
@@ -46,9 +37,21 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Initial sync
+### 3. Connect your Bandcamp account
 
-On first launch, navigate to the **Sync** page (link in the top-right corner of the nav bar, or go to `/sync`). The sync starts automatically and runs in two phases:
+On first launch you'll be redirected to the **Setup** page. You'll need two things:
+
+1. **Your Bandcamp username** -- the one from your profile URL (`bandcamp.com/your-username`)
+2. **Your identity cookie** -- a session cookie from your browser. Click the **?** button on the setup page for a step-by-step visual guide, or follow these steps:
+   - Go to [bandcamp.com](https://bandcamp.com) while logged in
+   - Open DevTools (F12) -> Application -> Cookies -> bandcamp.com
+   - Copy the value of the `identity` cookie
+
+Enter both values and click **Connect & start syncing**. The app validates your credentials against Bandcamp's API before saving them.
+
+### 4. Initial sync
+
+After setup you'll be taken to the **Sync** page, which starts automatically in two phases:
 
 1. **Fetching followed artists** -- pulls all bands you follow from Bandcamp
 2. **Fetching discographies** -- grabs the full release catalog for each artist (recently synced artists are skipped)
@@ -88,6 +91,23 @@ When hovering over a release card, a small sync button appears in the top-right 
 
 The **Artists** page lists all your followed artists, sorted by most recent release.
 
+### Settings
+
+The **Settings** page (cog icon in the nav bar) lets you:
+
+- **Update your cookie** -- Bandcamp session cookies expire over time. When syncing stops working, paste a fresh cookie here.
+- **Change account** -- switch to a different Bandcamp account. This wipes all synced data and starts fresh.
+
 ## Data storage
 
-All data is stored locally in a SQLite database at `data/store.sqlite`, created automatically on first sync. No external database setup is needed.
+All data is stored locally in a SQLite database at `data/store.sqlite`, created automatically on first run. No external database setup is needed.
+
+## Advanced: `.env.local`
+
+If you prefer to configure credentials via environment variables instead of the in-app setup, copy the example file and fill it in:
+
+```bash
+cp .env.local.example .env.local
+```
+
+The app checks the database first and falls back to `.env.local`, so either method works.
