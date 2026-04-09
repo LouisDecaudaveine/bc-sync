@@ -6,21 +6,28 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify": "tsx scripts/verify-bandcamp.ts",
+    "migrate:sqlite": "tsx scripts/migrate-json-to-sqlite.ts"
   },
   "dependencies": {
+    "better-sqlite3": "^12.8.0",
+    "bottleneck": "^2.19.5",
+    "dotenv": "^16.4.5",
     "next": "16.2.2",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }
